@@ -4,6 +4,7 @@ require('dotenv').config();
 // express set up, handles request, response easily
 const express = require('express');
 const app = express();
+const traverse = require('traverse');
 
 // express session
 const session = require('express-session');
@@ -80,7 +81,7 @@ app.all('/redirect', (req, res) => {
     const code = req.query.code;
     request.post(
         {
-            url:'https://developer.api.autodesk.com/authentication/v1/gettoken',
+            url: 'https://developer.api.autodesk.com/authentication/v1/gettoken',
             headers: { 'content-type': 'application/x-www-form-urlencoded' },
             form: {
                 client_id: client_id,
@@ -118,15 +119,23 @@ app.get('/user', (req, res) => {
             }
         },
         (error, response, body) => {
+
+            var output = JSON.parse(body);
+            var p = output.profileImages;
+            var img = "";
+            traverse(p).forEach(function (x) {
+                img += "<img src=" + x + "/>";
+            });
+
+            //console.log(profileImages);
             res.send(
-                "<p>You're logged in </p>" +
-                JSON.stringify(body, null, 4) +
+                "<p>You're logged in </p>" + "<p>" + output.userName + "</br>" + output.firstName + "," + output.lastName + "</br>" + "</p>" +
+                img +
                 '<p>Go back to <a href="/">log in page</a>.</p>'
             );
         }
     );
 });
-
 
 app.listen(port, () => {
     console.log('Server listening at port ' + port);
