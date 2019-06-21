@@ -1,5 +1,5 @@
 {
-  "name": "3leggedForgeoAuth",
+  "name": "forge3leggedoauth",
   "version": "1.0.0",
   "description": "Autodesk Single SignOn",
   "main": "app.js",
